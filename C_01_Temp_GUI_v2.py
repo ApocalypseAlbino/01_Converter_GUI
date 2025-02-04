@@ -40,33 +40,28 @@ class Converter:
         self.button_frame = Frame(self.temp_frame)
         self.button_frame.grid(row=4)
 
-        self.to_celsius_button = Button(self.button_frame,
-                                        text="To Celsius",
-                                        bg="#990099",
-                                        fg="#ffffff",
-                                        font=("Arial", "12", "bold"), width=12)
-        self.to_celsius_button.grid(row=0, column=0, pady=5, padx=5)
+        # button list (button text | bg colour | command | row | column)
+        button_details_list = [
+            ["To Celsius", "#990099", "", 0, 0],
+            ["To Fahrenheit", "#009900", "", 0, 1],
+            ["Help / Info", "#cc6600", "", 1, 0],
+            ["History / Export", "#004c99", "", 1, 1]
+        ]
 
-        self.to_fahrenheit_button = Button(self.button_frame,
-                                        text="To Fahrenheit",
-                                        bg="#009900",
-                                        fg="#ffffff",
-                                        font=("Arial", "12", "bold"), width=12)
-        self.to_fahrenheit_button.grid(row=0, column=1, pady=5, padx=5)
+        # List to hold buttons once they have been made
+        self.button_ref_list = []
 
-        self.help_button = Button(self.button_frame,
-                                        text="Help / Info",
-                                        bg="#cc6600",
-                                        fg="#ffffff",
-                                        font=("Arial", "12", "bold"), width=12)
-        self.help_button.grid(row=1, column=0, pady=5, padx=5)
+        for item in button_details_list:
+            self.make_button = Button(self.button_frame,
+                                      text=item[0], bg=item[1],
+                                      fg="#ffffff", font=("Arial", "12", "bold"),
+                                      width=12, command=item[2])
+            self.make_button.grid(row=item[3], column=item[4], padx=5, pady=5)
 
-        self.history_button = Button(self.button_frame,
-                                        text="History / Export",
-                                        bg="#004c99",
-                                        fg="#ffffff",
-                                        font=("Arial", "12", "bold"), width=12)
-        self.history_button.grid(row=1, column=1, pady=5, padx=5)
+            self.button_ref_list.append(self.make_button)
+
+        # retrieve 'history / export' button and disable it at the start
+        self.to_history_button = self.button_ref_list[3].config(state=DISABLED)
 
 
 # main routine
