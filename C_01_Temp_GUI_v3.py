@@ -64,7 +64,7 @@ class Converter:
         # retrieve 'history / export' button and disable it at the start
         self.to_history_button = self.button_ref_list[3].config(state=DISABLED)
 
-    def check_temp(self,min_temp):
+    def check_temp(self, min_temp):
         """
         Checks temperature is valid and either invokes calculation
         function or shows a custom error
@@ -77,17 +77,20 @@ class Converter:
         self.answer_error.config(fg="#004C99")
         self.temp_entry.config(bg="#fff")
 
+        error = f"Enter a number more than / equal to {min_temp}"
+        has_errors = "no"
+
         # checks that amount to be converted is above absolute zero
         try:
             to_convert = float(to_convert)
             if to_convert >= min_temp:
                 error = ""
-                self.convert(min_temp)
+                self.convert(min_temp, to_convert)
             else:
-                error = "Temperature entered below absolute zero"
+                error = error
 
         except ValueError:
-            error = "Enter a number"
+            error = error
 
         # display the error if necessary
         if error != "":
@@ -95,12 +98,12 @@ class Converter:
             self.temp_entry.config(bg="#f4cccc")
             self.temp_entry.delete(0, END)
 
-    def convert(self, min_temp):
+    def convert(self, min_temp, to_convert):
 
         if min_temp == c.ABS_ZERO_CELSIUS:
-            self.answer_error.config(text="Converting to F")
+            self.answer_error.config(text=f"Converting {to_convert}°C to °F")
         else:
-            self.answer_error.config(text="Converting to C")
+            self.answer_error.config(text=f"Converting {to_convert}°F to °C")
 
 
 # main routine
