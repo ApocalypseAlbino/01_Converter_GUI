@@ -1,5 +1,6 @@
 from tkinter import *
 import all_constants as c
+import conversion_rounding as cr
 
 
 class Converter:
@@ -11,6 +12,8 @@ class Converter:
         """
         Temperature converter GUI
         """
+
+        self.all_calculations_list = []
 
         self.temp_frame = Frame(padx=10, pady=10)
         self.temp_frame.grid()
@@ -34,7 +37,7 @@ class Converter:
 
         error = "Please enter a number"
         self.answer_error = Label(self.temp_frame, text=error,
-                                  fg="#004c99")
+                                  fg="#004c99", font=("Arial", "11", "bold"))
         self.answer_error.grid(row=3)
 
         # Conversion, help and history / export buttons
@@ -62,7 +65,8 @@ class Converter:
             self.button_ref_list.append(self.make_button)
 
         # retrieve 'history / export' button and disable it at the start
-        self.to_history_button = self.button_ref_list[3].config(state=DISABLED)
+        self.to_history_button = self.button_ref_list[3]
+        self.to_history_button.config(state=DISABLED)
 
     def check_temp(self, min_temp):
         """
@@ -74,7 +78,7 @@ class Converter:
         to_convert = self.temp_entry.get()
 
         # Reset label and entry box (after previous error)
-        self.answer_error.config(fg="#004C99")
+        self.answer_error.config(fg="#004C99", font=("Arial", "11", "bold"))
         self.temp_entry.config(bg="#fff")
 
         error = f"Enter a number more than / equal to {min_temp}"
@@ -94,16 +98,25 @@ class Converter:
 
         # display the error if necessary
         if error != "":
-            self.answer_error.config(text=error, fg="#9c0000")
+            self.answer_error.config(text=error, fg="#9c0000", font=("Arial", "9", "bold"))
             self.temp_entry.config(bg="#f4cccc")
             self.temp_entry.delete(0, END)
 
     def convert(self, min_temp, to_convert):
 
         if min_temp == c.ABS_ZERO_CELSIUS:
-            self.answer_error.config(text=f"Converting {to_convert}°C to °F")
+            answer = cr.to_fahrenheit(to_convert)
+            answer_statement = f"{to_convert}°C is {answer}°F"
         else:
-            self.answer_error.config(text=f"Converting {to_convert}°F to °C")
+            answer = cr.to_celsius(to_convert)
+            answer_statement = f"{to_convert}°F is {answer}°C"
+
+        # enable 'history / export' button as soon as we have a valid calculation
+        self.to_history_button.config(state=NORMAL)
+
+        self.answer_error.config(text=answer_statement)
+        self.all_calculations_list.append(answer_statement)
+        print(self.all_calculations_list)
 
 
 # main routine
