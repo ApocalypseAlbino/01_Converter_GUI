@@ -1,4 +1,5 @@
 from tkinter import *
+from functools import partial  # To prevent unwanted windows
 
 
 class Converter:
@@ -23,16 +24,23 @@ class Converter:
         self.to_help_button.grid(row=1, padx=5, pady=5)
 
     def to_help(self):
-        DisplayHelp()
+        DisplayHelp(self)
 
 
 class DisplayHelp:
 
-    def __init__(self):
+    def __init__(self, partner):
 
         # set up dialogue box and background color
         background = "#ffe6cc"
         self.help_box = Toplevel()
+
+        # disable button
+        partner.to_help_button.config(state=DISABLED)
+
+        # If users press 'X' instead of dismiss, unblocks help button
+        self.help_box.protocol('WM_DELETE_WINDOW',
+                               partial(self.close_help, partner))
 
         self.help_frame = Frame(self.help_box, width=300,
                                 height=200)
@@ -45,7 +53,7 @@ class DisplayHelp:
 
         help_text = "To se the program, simply enter the temperature " \
                     "you wish to convert and then choose to convert " \
-                    "to either degrees Celsius (centrigrade) or " \
+                    "to either degrees Celsius (centigrade) or " \
                     "Fahrenheit... \n \n"\
                     "Note that -273 degrees C " \
                     "(-459 F) is absolute zero (the coldest possible " \
@@ -64,7 +72,8 @@ class DisplayHelp:
         self.dismiss_button = Button(self.help_frame,
                                      font=("Arial", "12", "bold"),
                                      text="Dismiss", bg="#cc6600",
-                                     fg="#fff", command=self.close_help)
+                                     fg="#fff",
+                                     command=partial(self.close_help, partner))
         self.dismiss_button.grid(row=2, padx=10, pady=10)
 
         # List of everything to put background colour on
@@ -74,7 +83,8 @@ class DisplayHelp:
         for item in recolour_list:
             item.config(bg=background)
 
-    def close_help(self):
+    def close_help(self, partner):
+        partner.to_help_button.config(state=NORMAL)  # Re-enable the button
         self.help_box.destroy()
 
 
