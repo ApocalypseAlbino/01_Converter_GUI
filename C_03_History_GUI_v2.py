@@ -13,8 +13,11 @@ class Converter:
         Temperature converter GUI
         """
 
+        # self.all_calculations_list = ['10.0°F is -12°C', '20.0°F is -7°C', '30.0°F is -1°C',
+        #                               '40.0°F is 4°C', '50.0°F is 10°C', '60.0°F is 16°C']
+
         self.all_calculations_list = ['10.0°F is -12°C', '20.0°F is -7°C', '30.0°F is -1°C',
-                                      '40.0°F is 4°C', '50.0°F is 10°C', '60.0°F is 16°C']
+                                      '40.0°F is 4°C', '50.0°F is 10°C']
 
         self.temp_frame = Frame(padx=10, pady=10)
         self.temp_frame.grid()
@@ -56,29 +59,48 @@ class DisplayHistory:
         # background colour and text for the calculation area
         if len(calculations) <= c.MAX_CALCS:
             calc_back = "#d5e8d4"
-            calc_amount = "all your"
+            calc_amount = "all your calculations."
         else:
             calc_back = "#ffe6cc"
             calc_amount = (f"your recent calculations - "
-                           f"showing {c.MAX_CALCS} / {len(calculations)}")
+                           f"showing {c.MAX_CALCS} / {len(calculations)}.")
+
+        history_text = f"Below are {calc_amount} " \
+                       f"All calculations are shown to the nearest degree"
+
+        # Create string from calculations list (newest calculations first)
+        newest_first_string = ""
+        newest_first_list = list(reversed(calculations))
+
+        if len(newest_first_list) <= c.MAX_CALCS:
+
+            for item in newest_first_list[:-1]:
+                newest_first_string += item + "\n"
+
+            newest_first_string += newest_first_list[-1]
+
+        else:
+            for item in newest_first_list[:c.MAX_CALCS-1]:
+                newest_first_string += item + "\n"
+
+            newest_first_string += newest_first_list[c.MAX_CALCS-1]
+
+        export_text = "Please push <Export> to save your calculations in a text file. " \
+                      "If the filename already exists, it will be overwritten."
+
+        # Labels
 
         self.history_heading_label = Label(self.history_frame,
                                            text="History / Export",
                                            font=("Arial", "14", "bold"))
         self.history_heading_label.grid(row=0)
 
-        history_text = f"Below are your {calc_amount} most recent calculations - showing 3 /3 calculations. " \
-                       f"All calculations are shown to the nearest degree"
-
-        export_text = "Please push <Export> to save your calculations in a text file. " \
-                      "If the filename already exists, it will be overwritten."
-
         self.history_text_label = Label(self.history_frame,
                                         text=history_text, wraplength=240,
                                         justify="left")
         self.history_text_label.grid(row=1, padx=10, pady=10)
 
-        self.history = Label(self.history_frame, text="calculation list", bg=calc_back, justify="center",
+        self.history = Label(self.history_frame, text=newest_first_string, bg=calc_back, justify="left",
                              font=("Arial", "14"), padx=15, pady=5)
         self.history.grid(row=2)
 
