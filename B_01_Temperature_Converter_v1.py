@@ -15,7 +15,7 @@ class Converter:
         Temperature converter GUI
         """
 
-        self.all_calculations_list = ["This is a test"]
+        self.all_calculations_list = []
 
         self.temp_frame = Frame(padx=10, pady=10)
         self.temp_frame.grid()
